@@ -8,8 +8,7 @@ pr: none
 
 variables:
   buildConfiguration: 'Release'
-  Parameters.RestoreBuildProject: '$(Build.SourcesDirectory)/EZSpecification/EZSpecification.csproj'
-  Parameters.TestProject: '$(Build.SourcesDirectory)/EZSpecification.Test/EZSpecification.Test.csproj'
+  Parameters.Solution: '$(Build.SourcesDirectory)/EZSpecification.sln'
 
 steps:
 - task: DotNetCoreInstaller@0
@@ -20,7 +19,7 @@ steps:
   displayName: Restore
   inputs:
     command: restore
-    projects: '$(Parameters.RestoreBuildProject)'
+    projects: '$(Parameters.Solution)'
 
 - task: SonarCloudPrepare@1
   inputs:
@@ -35,14 +34,14 @@ steps:
 - task: DotNetCoreCLI@2
   displayName: Build
   inputs:
-    projects: '$(Parameters.RestoreBuildProject)'
+    projects: '$(Parameters.Solution)'
     arguments: '--configuration $(BuildConfiguration) --no-restore'
 
 - task: DotNetCoreCLI@2
   displayName: Test
   inputs:
     command: test
-    projects: '$(Parameters.TestProject)'
+    projects: '$(Parameters.Solution)'
     arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$(Build.SourcesDirectory)/opencover.xml '
 
 - task: SonarCloudAnalyze@1

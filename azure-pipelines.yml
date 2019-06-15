@@ -28,9 +28,8 @@ steps:
     scannerMode: 'MSBuild'
     projectKey: 'DillonAd_ezspecification'
     projectName: 'EZSpecification'
-    extraProperties: |
-     sonar.cs.opencover.reportsPaths="$(Build.SourcesDirectory)\opencover.xml"
-
+    extraProperties: 'sonar.cs.opencover.reportsPaths="$(Build.SourcesDirectory)\\opencover.xml"'
+    
 - task: DotNetCoreCLI@2
   displayName: Build
   inputs:

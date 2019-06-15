@@ -42,7 +42,7 @@ steps:
   inputs:
     command: test
     projects: '$(Parameters.Solution)'
-    arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$(Build.SourcesDirectory)/opencover.xml '
+    arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$(Build.SourcesDirectory)/opencover.xml /p:Exclude="[xunit.*]*"'
 
 - task: SonarCloudAnalyze@1
 

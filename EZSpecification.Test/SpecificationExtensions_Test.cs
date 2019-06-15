@@ -12,9 +12,6 @@ namespace EZSpecification.Test
     {
         private readonly IEnumerable<Item> _items;
 
-        private readonly Item _firstItem;
-        private readonly Item _lastItem;
-
         public SpecificationExtensions_Test()
         {
             _items = new[]

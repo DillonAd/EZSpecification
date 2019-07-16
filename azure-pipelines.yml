@@ -1,12 +1,13 @@
+name: $(Build.BuildId)
+trigger:
+  - master
+pr: none
+
 stages:
   - stage: Build
     jobs:
       - job: Build
-        name: $(Build.BuildId)
         pool: Default
-        trigger:
-         - master
-        pr: none
 
         variables:
           buildConfiguration: 'Release'

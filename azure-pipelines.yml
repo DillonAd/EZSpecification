@@ -73,6 +73,8 @@ stages:
           runOnce:
             deploy:
               steps:
+                - download: current
+                  artifact: source
                 - task: DotNetCoreCLI@2
                   displayName: 'NuGet Push'
                   inputs:

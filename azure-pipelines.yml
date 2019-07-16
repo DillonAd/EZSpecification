@@ -1,7 +1,8 @@
 name: $(Build.BuildId)
 trigger:
   - master
-pr: none
+pr:
+  - master
 
 stages:
   - stage: Build
@@ -25,6 +26,7 @@ stages:
                   projects: '$(Parameters.Solution)'
 
             - task: SonarCloudPrepare@1
+              condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
               inputs:
                   SonarCloud: 'Evolution'
                   organization: 'dillonad-github'
@@ -47,12 +49,15 @@ stages:
                   arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$(Build.SourcesDirectory)/opencover.xml /p:Exclude="[xunit.*]*"'
 
             - task: SonarCloudAnalyze@1
+              condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
             - task: SonarCloudPublish@1
+              condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
               inputs:
                   pollingTimeoutSec: '300'
 
             - task: DotNetCoreCLI@2
+              condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
               displayName: Pack
               inputs:
                   command: pack
@@ -60,6 +65,7 @@ stages:
                   arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
 
             - task: PublishBuildArtifacts@1
+              condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
               displayName: 'Publish Artifact: source'
               inputs:
                   PathtoPublish: '$(Build.ArtifactStagingDirectory)'

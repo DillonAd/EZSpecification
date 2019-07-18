@@ -1,56 +1,89 @@
 name: $(Build.BuildId)
-
-pool: Default
-
 trigger:
- - master
-pr: none
+  - master
+pr:
+  - master
 
-variables:
-  buildConfiguration: 'Release'
-  Parameters.Solution: '$(Build.SourcesDirectory)/EZSpecification.sln'
+stages:
+  - stage: Build
+    jobs:
+      - job: Build
+        pool: Default
 
-steps:
-- task: DotNetCoreInstaller@0
-  inputs:
-    version: 2.2.300
+        variables:
+          buildConfiguration: 'Release'
+          Parameters.Solution: '$(Build.SourcesDirectory)/EZSpecification.sln'
+
+        steps:
+            - task: DotNetCoreInstaller@0
+              inputs:
+                version: 2.2.300
     
-- task: DotNetCoreCLI@2
-  displayName: Restore
-  inputs:
-    command: restore
-    projects: '$(Parameters.Solution)'
+            - task: DotNetCoreCLI@2
+              displayName: Restore
+              inputs:
+                  command: restore
+                  projects: '$(Parameters.Solution)'
 
-- task: SonarCloudPrepare@1
-  inputs:
-    SonarCloud: 'Evolution'
-    organization: 'dillonad-github'
-    scannerMode: 'MSBuild'
-    projectKey: 'DillonAd_ezspecification'
-    projectName: 'EZSpecification'
-    extraProperties: 'sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/opencover.xml'
-    
-- task: DotNetCoreCLI@2
-  displayName: Build
-  inputs:
-    projects: '$(Parameters.Solution)'
-    arguments: '--configuration $(BuildConfiguration) --no-restore'
+            - task: SonarCloudPrepare@1
+              condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+              inputs:
+                  SonarCloud: 'Evolution'
+                  organization: 'dillonad-github'
+                  scannerMode: 'MSBuild'
+                  projectKey: 'DillonAd_ezspecification'
+                  projectName: 'EZSpecification'
+                  extraProperties: 'sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/opencover.xml'
+                    
+            - task: DotNetCoreCLI@2
+              displayName: Build
+              inputs:
+                  projects: '$(Parameters.Solution)'
+                  arguments: '--configuration $(BuildConfiguration) --no-restore'
 
-- task: DotNetCoreCLI@2
-  displayName: Test
-  inputs:
-    command: test
-    projects: '$(Parameters.Solution)'
-    arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$(Build.SourcesDirectory)/opencover.xml /p:Exclude="[xunit.*]*"'
+            - task: DotNetCoreCLI@2
+              displayName: Test
+              inputs:
+                  command: test
+                  projects: '$(Parameters.Solution)'
+                  arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$(Build.SourcesDirectory)/opencover.xml /p:Exclude="[xunit.*]*"'
 
-- task: SonarCloudAnalyze@1
+            - task: SonarCloudAnalyze@1
+              condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
-- task: SonarCloudPublish@1
-  inputs:
-    pollingTimeoutSec: '300'
+            - task: SonarCloudPublish@1
+              condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+              inputs:
+                  pollingTimeoutSec: '300'
 
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: source'
-  inputs:
-    PathtoPublish: '$(Build.SourcesDirectory)'
-    ArtifactName: source
+            - task: DotNetCoreCLI@2
+              condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+              displayName: Pack
+              inputs:
+                  command: pack
+                  projects: '$(Parameters.Solution)'
+                  arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+
+            - task: PublishBuildArtifacts@1
+              condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+              displayName: 'Publish Artifact: source'
+              inputs:
+                  PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+                  ArtifactName: source
+  - stage: Deploy
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    jobs:
+      - deployment: NuGet
+        pool: Default
+        environment: Production
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: source
+                - task: DotNetCoreCLI@2
+                  displayName: 'NuGet Push'
+                  inputs:
+                      command: nuget
+                      arguments: 'push'

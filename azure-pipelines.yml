@@ -3,6 +3,8 @@ trigger:
   - master
 pr:
   - master
+variables:
+  ProdArtifact: nuget
 
 stages:
   - stage: Build
@@ -69,7 +71,7 @@ stages:
               displayName: 'Publish Artifact: source'
               inputs:
                   PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-                  ArtifactName: source
+                  ArtifactName: '$(ProdArtifact)'
   - stage: Deploy
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     jobs:
@@ -86,5 +88,5 @@ stages:
                   displayName: 'NuGet Push'
                   inputs:
                       command: push
-                      packagesToPush: '$(Build.SourcesDirectory)/*.nupkg'
+                      packagesToPush: '$(Pipeline.Workspace)/$(ProdArtifact)/*.nupkg'
                       publishFeedCredentials: DillonAd

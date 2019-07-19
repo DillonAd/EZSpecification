@@ -86,5 +86,5 @@ stages:
                   displayName: 'NuGet Push'
                   inputs:
                       command: push
-                      packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+                      packagesToPush: '$(Build.SourcesDirectory)/*.nupkg'
                       publishFeedCredentials: DillonAd

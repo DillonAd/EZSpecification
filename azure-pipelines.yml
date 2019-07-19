@@ -82,8 +82,9 @@ stages:
               steps:
                 - download: current
                   artifact: source
-                - task: DotNetCoreCLI@2
+                - task: NuGetCommand@2
                   displayName: 'NuGet Push'
                   inputs:
-                      command: nuget
-                      arguments: 'push'
+                      command: push
+                      packagesToPush: '*.nupkg'
+                      publishFeedCredentials: DillonAd

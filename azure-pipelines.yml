@@ -66,12 +66,9 @@ stages:
                   projects: '$(Parameters.Solution)'
                   arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
 
-            - task: PublishBuildArtifacts@1
-              condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-              displayName: 'Publish Artifact: $(Artifact.Prod)'
-              inputs:
-                  PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-                  ArtifactName: '$(Artifact.Prod)'
+            - publish: '$(Build.ArtifactStagingDirectory)'
+              artifact: '$(Artifact.Prod)'
+              
   - stage: Deploy
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     jobs:

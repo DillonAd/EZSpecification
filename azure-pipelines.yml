@@ -84,10 +84,10 @@ stages:
                     script: |
                       echo $(Pipeline.Workspace)
                       echo $(Artifact.Prod)
-                      
+                      echo ls $(Pipeline.Workspace)/$(Artifact.Prod)
                 - task: NuGetCommand@2
                   displayName: 'NuGet Push'
                   inputs:
                       command: push
-                      packagesToPush: '*.nupkg'
+                      packagesToPush: '$(Pipeline.Workspace)/$(Artifact.Prod)/*.nupkg'
                       publishFeedCredentials: DillonAd

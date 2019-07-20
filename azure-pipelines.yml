@@ -68,7 +68,7 @@ stages:
 
             - publish: '$(Build.ArtifactStagingDirectory)'
               artifact: '$(Artifact.Prod)'
-              
+
   - stage: Deploy
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     jobs:
@@ -79,9 +79,15 @@ stages:
           runOnce:
             deploy:
               steps:
+                - task: CmdLine@2
+                  inputs:
+                    script: |
+                      echo $(Pipeline.Workspace)
+                      echo $(Artifact.Prod)
+                      
                 - task: NuGetCommand@2
                   displayName: 'NuGet Push'
                   inputs:
                       command: push
-                      packagesToPush: '$(Pipeline.Workspace)/$(Artifact.Prod)/*.nupkg'
+                      packagesToPush: '*.nupkg'
                       publishFeedCredentials: DillonAd

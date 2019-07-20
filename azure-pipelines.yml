@@ -4,7 +4,7 @@ trigger:
 pr:
   - master
 variables:
-  Artifact.Prod: nuget
+  Artifact.Prod: NuGet
 
 stages:
   - stage: Build

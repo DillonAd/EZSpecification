@@ -85,7 +85,8 @@ stages:
                       echo $(Pipeline.Workspace)
                       echo $(Artifact.Prod)
                       echo ls $(Pipeline.Workspace)/$(Artifact.Prod)
-                - task: NuGetCommand@2
+                # - task: NuGetCommand@2
+                - task: DotNetCoreCLI@2
                   displayName: 'NuGet Push'
                   inputs:
                       command: push

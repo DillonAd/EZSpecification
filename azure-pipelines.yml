@@ -73,14 +73,14 @@ stages:
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     jobs:
       - deployment: NuGet
-        pool: Default
+        pool: 'Hosted VS2017'
         environment: Production
         strategy:
           runOnce:
             deploy:
               steps:
                 - task: NuGetToolInstaller@0
-                
+
                 - task: NuGetCommand@2
                   displayName: 'NuGet Push'
                   inputs:

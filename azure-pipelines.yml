@@ -92,3 +92,4 @@ stages:
                     command: push
                     nuGetFeedType: external
                     publishFeedCredentials: DillonAd
+                    packagesToPush: '$(Pipeline.Workspace)/$(Artifact.Prod)/*.nupkg'

@@ -89,6 +89,6 @@ stages:
                 - task: DotNetCoreCLI@2
                   displayName: 'NuGet Push'
                   inputs:
-                      command: push
-                      packagesToPush: '$(Pipeline.Workspace)/$(Artifact.Prod)/*.nupkg'
-                      publishFeedCredentials: DillonAd
+                    command: push
+                    nuGetFeedType: external
+                    publishFeedCredentials: DillonAd

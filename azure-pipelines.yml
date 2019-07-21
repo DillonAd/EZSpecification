@@ -80,6 +80,7 @@ stages:
             deploy:
               steps:
                 - task: NuGetToolInstaller@0
+                
                 - task: NuGetCommand@2
                   displayName: 'NuGet Push'
                   inputs:

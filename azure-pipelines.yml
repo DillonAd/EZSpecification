@@ -79,12 +79,7 @@ stages:
           runOnce:
             deploy:
               steps:
-                - task: CmdLine@2
-                  inputs:
-                    script: |
-                      echo $(Pipeline.Workspace)
-                      echo $(Artifact.Prod)
-                      echo ls $(Pipeline.Workspace)/$(Artifact.Prod)
+                - task: NuGetToolInstaller@0
                 - task: NuGetCommand@2
                   displayName: 'NuGet Push'
                   inputs:

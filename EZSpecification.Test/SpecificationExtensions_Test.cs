@@ -130,7 +130,7 @@ namespace EZSpecification.Test
             return spec1.Object.Or(spec2.Object);
         }
 
-        public readonly struct Item : IEntity
+        public class Item
         {
             public Guid Id { get; }
             public string Name { get; }

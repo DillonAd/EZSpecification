@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 namespace EZSpecification.Internal
 {
     public class CompoundSpecification<TEntity> : Specification<TEntity>
-        where TEntity : IEntity
+        where TEntity : class
     {
         public override Expression<Func<TEntity, bool>> Expression { get; set; }
 

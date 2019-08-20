@@ -2,7 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <VersionPrefix>2.0.0</VersionPrefix>
+    <VersionPrefix>2.0.1</VersionPrefix>
+    <PackageProjectUrl>https://github.com/DillonAd/EZSpecification</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/DillonAd/EZSpecification/blob/master/LICENSE</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/DillonAd/EZSpecification</RepositoryUrl>
   </PropertyGroup>
   
 </Project>
